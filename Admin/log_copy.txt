@@ -1,0 +1,232 @@
+<?php
+session_start();
+if(isset($_POST['ans']) && !empty($_POST['ans']) && isset($_POST['auth']) && !empty($_POST['auth'])){
+
+require_once('config.php');
+function clean($str) {
+ $str = @trim($str);
+   if(get_magic_quotes_gpc()){
+   $str = stripslashes($str);
+   
+   
+   }
+
+
+return mysql_real_escape_string($str);
+
+
+}
+
+	
+	
+function getRealIpAddress()
+{
+if (!empty($_SERVER['HTTP_CLIENT_IP']))
+
+{
+$ipadd=$_SERVER['HTTP_CLIENT_IP'];
+}
+elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))
+
+{
+$ipadd=$_SERVER['HTTP_X_FORWARDED_FOR'];
+}
+else
+{
+$ipadd=$_SERVER['REMOTE_ADDR'];
+}
+return $ipadd;
+}
+
+$user_agent     =   $_SERVER['HTTP_USER_AGENT'];
+
+
+	
+	function getOS() { 
+
+    global $user_agent;
+
+    $os_platform    =   "Unknown OS Platform";
+
+    $os_array       =   array(
+            '/windows nt 6.2/i'     =>  'Windows 8',
+            '/windows nt 6.1/i'     =>  'Windows 7',
+            '/windows nt 6.0/i'     =>  'Windows Vista',
+            '/windows nt 5.2/i'     =>  'Windows Server 2003/XP x64',
+            '/windows nt 5.1/i'     =>  'Windows XP',
+            '/windows xp/i'         =>  'Windows XP',
+            '/windows nt 5.0/i'     =>  'Windows 2000',
+            '/windows me/i'         =>  'Windows ME',
+            '/win98/i'              =>  'Windows 98',
+            '/win95/i'              =>  'Windows 95',
+            '/win16/i'              =>  'Windows 3.11',
+            '/macintosh|mac os x/i' =>  'Mac OS X',
+            '/mac_powerpc/i'        =>  'Mac OS 9',
+            '/linux/i'              =>  'Linux',
+            '/ubuntu/i'             =>  'Ubuntu',
+            '/iphone/i'             =>  'iPhone',
+            '/ipod/i'               =>  'iPod',
+            '/ipad/i'               =>  'iPad',
+            '/android/i'            =>  'Android',
+            '/blackberry/i'         =>  'BlackBerry',
+            '/webos/i'              =>  'Mobile'
+                        );
+
+    foreach ($os_array as $regex => $value) { 
+
+        if (preg_match($regex, $user_agent)) {
+            $os_platform    =   $value;
+        }
+
+    }   
+
+    return $os_platform;
+
+}
+
+function getBrowser() {
+
+    global $user_agent;
+
+    $browser        =   "Unknown Browser";
+
+    $browser_array  =   array(
+            '/msie/i'       =>  'Internet Explorer',
+            '/firefox/i'    =>  'Firefox',
+            '/safari/i'     =>  'Safari',
+            '/chrome/i'     =>  'Chrome',
+            '/opera/i'      =>  'Opera',
+            '/netscape/i'   =>  'Netscape',
+            '/maxthon/i'    =>  'Maxthon',
+            '/konqueror/i'  =>  'Konqueror',
+            '/mobile/i'     =>  'Handheld Browser'
+                        );
+
+    foreach ($browser_array as $regex => $value) { 
+
+        if (preg_match($regex, $user_agent)) {
+            $browser    =   $value;
+        }
+
+    }
+
+    return $browser;
+
+}
+
+
+
+
+	$ip = getRealIpAddress();
+	$os =   getOS();
+    $browser  =   getBrowser();
+	$level = "" ;
+	if(isset($_POST['level'])){
+	foreach($_POST['level'] as $key){
+	$level =  $key ;
+	}
+	}
+	$login = clean($_POST['user']);
+	$salt = "wolexzo07dacrackeristheCodehouseAdmin";
+	$pass = clean(md5(sha1($_POST['pass'])));
+	$token = clean($_POST['auth']);
+	
+			
+		
+			$tab = "
+			CREATE TABLE IF NOT EXISTS login_tracker(
+				id INT AUTO_INCREMENT NOT NULL PRIMARY KEY ,
+				fullname TEXT NOT NULL ,
+				username TEXT NOT NULL ,
+				last_ip_address TEXT NOT NULL,
+				level TEXT NOT NULL ,
+				OS TEXT NOT NULL ,
+				browser TEXT NOT NULL ,
+				session_token TEXT NOT NULL ,
+				login_time TEXT NOT NULL
+				)
+				";
+				
+				$query = mysql_query($tab);
+				if(!$query){
+				$msg="<script type='text/javascript'>alert('Table Creation Failed!')</script>";
+				header("location:login-form.php?msg=$msg");
+				exit();
+				}
+		
+	$token_update = "UPDATE admin_register SET token='$token' WHERE username='$login'";
+	$query_token_update = mysql_query($token_update);
+	if(!$query_token_update){
+	$msg="<script type='text/javascript'>alert('Failed to update token!')</script>";
+	header("location:login-form.php?msg=$msg");
+	exit();
+	}
+	
+	$qry="SELECT * FROM admin_register WHERE username ='$login' AND level = '$level' AND password = '$password' ";
+	$level_confirm ="SELECT * FROM admin_register WHERE  username ='$login' AND level != '$level' AND Password = '$password' ";
+	$lev =mysql_query($level_confirm);
+	if(mysql_num_rows($lev) == 1) {
+		
+				$msg="<script type='text/javascript'>alert('Please Check your level!>";
+				header("location:login-form.php?msg=$msg");
+				exit();
+	
+	}
+	$result=mysql_query($qry);
+	
+	if($result) {
+		if(mysql_num_rows($result) == 1) {
+			session_regenerate_id();
+			$member = mysql_fetch_assoc($result);
+			$_SESSION['CodeHouseGroup_Session_Examination_Assessment_id'] = $member['id'];
+			$_SESSION['CodeHouseGroup_Session_Examination_Assessment_username'] = $member['username'];
+			$_SESSION['CodeHouseGroup_Session_Examination_Assessment_fullname'] = $member['fullname'];
+			$_SESSION['CodeHouseGroup_Session_Examination_Assessment_email'] = $member['email'];
+			$_SESSION['CodeHouseGroup_Session_Examination_Assessment_level'] = $member['level'];
+			$_SESSION['CodeHouseGroup_Session_Examination_Assessment_gender'] = $member['gender'];
+			$_SESSION['CodeHouseGroup_Session_Examination_Assessment_title'] = $member['title'];
+			$_SESSION['CodeHouseGroup_Session_Examination_Assessment_ip_address'] = $member['ip_address'];
+			$_SESSION['CodeHouseGroup_Session_Examination_Assessment_os'] = $member['OS'];
+			$_SESSION['CodeHouseGroup_Session_Examination_Assessment_token'] = $member['token'];
+			session_write_close();
+			
+			
+			$sess_tok = $_SESSION['CodeHouseGroup_Session_Examination_Assessment_token'];
+			$user = $_SESSION['CodeHouseGroup_Session_Examination_Assessment_username'];
+			$full = $_SESSION['CodeHouseGroup_Session_Examination_Assessment_fullname'];
+			$level = $_SESSION['CodeHouseGroup_Session_Examination_Assessment_level'] ;
+			
+			$insert = "INSERT INTO login_tracker(username, fullname, last_ip_address, level, OS , browser , session_token , login_time) VALUES('$user' ,'$full' ,'$ip'  ,'$level' ,'$os'  ,'$browser'  ,'$sess_tok',now())";
+			$track = mysql_query($insert);
+			if(!$track){
+			session_destroy();
+			$msg="<script type='text/javascript'>alert('Failed to track your login!')</script>";
+			header("location:login-form.php?msg=$msg");
+				exit();
+			
+			}
+			
+			header("location:index.php");
+			exit();
+		}
+		else {
+		
+		
+			$msg="<script type='text/javascript'>alert('Login-Failed !! Try Again')</script>";
+			header("location:login-form.php?msg=$msg");
+				exit();
+		}
+	}
+
+
+}
+
+		else {
+		
+		
+			$msg="<script type='text/javascript'>alert('Parameter missing')</script>";
+			header("location:login-form.php?msg=$msg");
+				exit();
+		}
+
+?>

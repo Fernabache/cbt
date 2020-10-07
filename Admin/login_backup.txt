@@ -1,0 +1,102 @@
+<?php
+session_start();
+?>
+<html>
+<head>
+<title>Administrator Login Page</title>
+<link rel="stylesheet" href="style/style.css" media="all"/>
+<link rel="shortcut icon" href="" type="image/x-icon"/>
+<script src="custom.js" type="text/javascript"></script>
+<script src="jquery-1.7.2.min.js"></script>
+
+</head>
+<body style="background-image:url(image/bvg.png);">
+<?php
+include("header.php");
+?>
+<div align="center">
+
+<p>
+<?php
+if(isset($_GET["msg"]) && !empty($_GET["msg"]))
+{
+echo $_GET["msg"] ;
+}
+?>
+</p>
+
+<div id="form_style">
+<img src="image/admin.png" class="imt"/>
+<?php
+if(isset( $_SESSION['CodeHouseGroup_Session_Examination_Assessment_id']) || isset( $_SESSION['CodeHouseGroup_Session_Examination_Assessment_username'])){
+
+$msg="<p style='color:green'>Please you can't Login because a session is active</p>";
+$ss = $_SESSION['CodeHouseGroup_Session_Examination_Assessment_username'];
+echo $msg ."<br/>";
+echo "user <b>".$ss."</b> is logged in already<br/>";
+echo "<p style='text-align:center'><a href='logout.php' target='_blank'>Logout</a> | <a href='index.php' target='_blank'>Homepage</a>"."</p>";
+}
+else{
+?>
+<form method="POST" action="log_processor.php">
+<table cellspacing="4px" cellpadding="4px">
+
+<tr>
+<td>Username</td>
+<td>
+<input type="text" autocomplete="off" placeholder="Enter Username" style="" name="user"  class="inpt"/>
+</td>
+
+</tr>
+
+
+<tr>
+<td>
+Password
+</td>
+<td>
+<input type="password" placeholder="Enter Password" name="pass"  class="inpt"/>
+</td>
+
+</tr>
+
+
+
+
+<tr>
+<td>
+Level
+</td>
+<td>
+<select name="level[]" style="" class="inptt">
+<option value="Super">Super Administrator</option>
+<option value="Admin">Administrator</option>
+
+</select>
+</td>
+
+</tr>
+
+<tr>
+<td><input type="hidden" name="ans" value="validate"/><input type="hidden" name="auth" value="<?php $salt = 'wolexzo07dacracker';$token=sha1(rand() .$salt);echo $token;?>"/></td>
+<td>
+<input type="image" src="image/logh1.png" id="log_for" style="padding:5px;width:80px;"/>
+</td>
+
+</tr>
+
+</table>
+</form>
+
+<?php
+}
+
+?></div>
+</div>
+<div style="border-top:2px solid black;margin-top:30pt;padding:10pt">
+<?php
+include("footer.php");
+?>
+</div>
+</body>
+</html>

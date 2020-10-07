@@ -1,0 +1,39 @@
+
+function show(str){
+var xmlhttp;
+
+if(str.length==0)
+{
+document.getElementById("username").innerHTML="";
+document.getElementById("username").style.display="none";
+return;
+}
+
+if(window.XMLHttpRequest){
+
+xmlhttp = new XMLHttpRequest();
+
+}
+else{
+xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+
+}
+xmlhttp.onreadystatechange=function(){
+if(xmlhttp.readyState == 4 && xmlhttp.status == 200){
+
+document.getElementById("username").style.display="block";
+
+document.getElementById("username").innerHTML=xmlhttp.responseText;
+
+
+}
+
+
+
+}
+
+xmlhttp.open("GET","search.php?q="+str,true);
+xmlhttp.send();
+
+}
+

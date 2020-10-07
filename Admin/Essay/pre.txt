@@ -1,0 +1,50 @@
+
+<?php
+require_once("../config.php");
+$user = $_SESSION['CURRENT_IUO_DATA_USERNAME'];
+$sele = "SELECT * FROM essay_submission WHERE lecturer_name='$user' ORDER BY id";
+$resi = mysql_query($sele);
+if(!$resi){
+echo "failed to query data!";
+}
+else{
+$count = mysql_num_rows($resi);
+?><div style="margin:2%;">
+<p style="margin-top:10pt;margin-bottom:10pt;letter-spacing:2px;">TOTAL SUBMITTED EXAMINATION SCRIPT IS  &raquo;&raquo; <?php echo $count;?></p>
+<table cellpadding="5px" width="100%" cellspacing="1px" border="1px">
+<tr>
+<th align="left">No.</th><th align="left">Names</th><th align="left">Username</th><th align="left">Subject</th><th align="left">Exam Script</th><th align="left">Compute Score</th><th align="left">Score</th>
+</tr>
+<?php include("updatee.php");?>
+<?php
+while($row = mysql_fetch_array($resi)){
+$id = $row["id"];
+$name = $row["name"];
+$user = $row["username"];
+$path = $row["question_path"];
+$token = $row["token"];
+$paper = $row["paper_type"];
+$score = $row["score"];
+$subject = $row["subject"];
+$lect = $row["lecturer_name"];
+$date = $row["date_time"];
+?><tr>
+<td><p style="letter-spacing:2px;"><?php echo $id.".";?></p></td>
+<td><p style="letter-spacing:2px;"><?php echo $name;?></p></td>
+<td><?php echo $user;?></td>
+<td><?php echo $subject;?></td>
+<td><a href="<?php echo "/iuo/".$path;?>" target="_blank" title="Click to download the student (<?php echo $user;?>) examination script"><?php echo $user;?></a></td>
+<td>
+
+<form method="POST" action="<?php echo $_SERVER['PHP_SELF'];?>">
+<input type="text" maxlength="3" required="" style="height:30px;width:50px;padding:5px;float:left;border:1px solid blue;" name="score" />
+<input type="hidden" name="user_app" value="<?php echo $user;?>"/>
+<input type="hidden" name="user_appi" value="<?php echo " ".$name;?>"/>
+<input type="hidden" name="id" value="<?php echo " ".$id;?>"/>
+<input type="image" src="../img/submit.png" style="width:80px;float:left"/></form></td>
+<td><p style="letter-spacing:2px;font-weight:bold;"><?php echo $score;?></p></td></tr>
+<?php
+
+}?></table></div><?php
+}
+?>

@@ -1,0 +1,56 @@
+<script type="text/javascript" language="javascript">
+function result(str){
+var xmlhttp;
+if(str.length==0)
+{
+document.getElementById("search").innerHTML="";
+document.getElementById("search").style.border="0px";
+document.getElementById("imgi").style.display="none";
+return;
+}
+
+if(window.XMLHttpRequest){
+
+xmlhttp = new XMLHttpRequest();
+
+}
+else{
+xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+
+}
+xmlhttp.onreadystatechange=function(){
+if(xmlhttp.readyState == 4 && xmlhttp.status == 200){
+
+document.getElementById("search").style.display="block";
+document.getElementById("imgi").style.display="block";
+document.getElementById("search").innerHTML=xmlhttp.responseText;
+document.getElementById("search").style.border="0px";
+
+
+}
+
+
+
+}
+
+xmlhttp.open("GET","username_checker.php?q="+str,true);
+xmlhttp.send();
+
+}
+
+</script>
+
+
+
+<script type="text/javascript" language="javascript">
+function getid(){
+var vh = document.getElementById("pass").value ;
+if(vh.length == 0 || vh.length <= 5 )
+{
+document.getElementById("search").innerHTML="please your password is very weak";
+document.getElementById("search").style.border="0px";
+document.getElementById("imgi").style.display="none";
+return;
+}
+
+</script>

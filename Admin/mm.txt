@@ -1,0 +1,7 @@
+
+<tr><td><a href="scores.php?user=<?php echo $user_t;?>"><?php echo strtoupper($user_t);?></td><td><?php echo strtoupper($full);?></td>
+<?php include("category.php"); ?>
+<?php echo "<td><b>Aggregate = $total_p</b></td>"?>
+
+
+<tr>

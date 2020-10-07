@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS multiple_choice(
+id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+user TEXT NOT NULL,
+qchoice TEXT NOT NULL,
+arrangement TEXT NOT NULL,
+status TEXT NOT NULL,
+login_time TEXT NOT NULL,
+logout_time TEXT NOT NULL,
+token TEXT NOT NULL
+)
+
+CREATE TABLE IF NOT EXISTS fee_status(
+id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+user TEXT NOT NULL,
+amount_paid TEXT NOT NULL,
+amount_to_pay TEXT NOT NULL,
+level TEXT NOT NULL,
+token TEXT NOT NULL
+
+)

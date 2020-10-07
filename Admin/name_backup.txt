@@ -1,0 +1,41 @@
+
+<?php
+require_once("config.php");
+$cmd = "SELECT DISTINCT script_owner ,Score_approval FROM exams_scores";
+$query = mysql_query($cmd);
+$num = mysql_num_rows($query);
+
+$cmd_qu = "SELECT DISTINCT categories AS catego FROM questions WHERE approval_status='approved'";
+$query_qu = mysql_query($cmd_qu);
+$num_qu = mysql_num_rows($query_qu);
+?>
+<table cellspacing="5px" cellpadding="5px" width="100%" border="1px">
+<tr><th>Names</th>
+<?php
+if($num != 0 && $num_qu != 0){
+while(($row = mysql_fetch_array($query)) && ($row_qu = mysql_fetch_array($query_qu)) ){
+$user_t= $row['script_owner'];
+$status = $row['Score_approval'];
+$cat_p = $row_qu['catego'];
+
+echo "<th>$cat_p</th>";
+
+
+
+}
+
+?>
+<td>Aggregate</td>
+</tr>
+
+</table>
+<?php
+
+}
+else{
+echo "<center><b>Nobody has submitted!!</b></center> ";
+
+}
+
+
+?>
